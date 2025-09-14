@@ -1,6 +1,7 @@
 {
   "name": "nehal-portfolio-chatbot-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Serverless backend for Nehal's portfolio chatbot",
   "main": "index.js",
   "scripts": {
