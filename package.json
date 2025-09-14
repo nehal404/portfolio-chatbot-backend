@@ -12,5 +12,16 @@
   },
   "engines": {
     "node": ">=18.x"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nehal404/portfolio-chatbot-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nehal404/portfolio-chatbot-backend/issues"
+  },
+  "homepage": "https://github.com/nehal404/portfolio-chatbot-backend#readme"
 }
