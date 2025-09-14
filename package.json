@@ -1,13 +1,8 @@
 {
   "name": "nehal-portfolio-chatbot-backend",
   "version": "1.0.0",
-  "type": "module",
   "description": "Serverless backend for Nehal's portfolio chatbot",
   "main": "index.js",
-  "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod"
-  },
   "dependencies": {
     "groq-sdk": "^0.3.3"
   },
@@ -20,9 +15,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nehal404/portfolio-chatbot-backend/issues"
-  },
-  "homepage": "https://github.com/nehal404/portfolio-chatbot-backend#readme"
+  "license": "ISC"
 }

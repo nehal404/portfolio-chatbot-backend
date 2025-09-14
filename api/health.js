@@ -1,5 +1,4 @@
-// api/health.js - Health check endpoint for backend status
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,19 +8,16 @@ export default async function handler(req, res) {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle preflight request
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  // Only allow GET requests
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Check if Groq API key is available
     const hasApiKey = !!process.env.GROQ_API_KEY;
     
     return res.status(200).json({
@@ -42,4 +38,6 @@ export default async function handler(req, res) {
       error: 'Internal server error'
     });
   }
-}
+};
+
+module.exports = handler;

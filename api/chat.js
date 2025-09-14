@@ -1,7 +1,5 @@
-// api/chat.js - Vercel serverless function
-import Groq from 'groq-sdk';
+const Groq = require('groq-sdk');
 
-// System prompt with Nehal's CV context
 const SYSTEM_PROMPT = `You are Nehal Alaa's AI assistant, designed to answer questions about her professional background, skills, and projects. You have access to her comprehensive CV and should provide detailed, accurate information about her experience.
 
 Key Information about Nehal Alaa:
@@ -19,41 +17,9 @@ WORK EXPERIENCE:
    - Developed AI robotic pollinator for vertical farms, boosting yield by 30%
    - Trained 50K-image plant disease model with YOLOv8 for real-time crop health analytics
 
-KEY PROJECTS:
-- RoboDoc: Point-of-care diagnostic platform with 430k images dataset, 95% accuracy
-- Orion AI: Strawberry health monitoring with YOLOv8-seg, 92% IoU accuracy
-- Smart Collar: Cow health monitoring IoT device with 90% Wi-Fi transmission
-- Psychonova: VR-based anxiety therapy platform with EEG/GSR sensors
-- MNN Slicer: Open-source bioprinting software reducing printing time by 80%
-- Oxygreen: Air purification device cutting CO₂ by 60% in 12 hours
-- RndBio: AI urine diagnostic device with YOLOv11n on Raspberry Pi
+Answer questions conversationally and professionally. Be enthusiastic about her achievements while remaining factual.`;
 
-TECHNICAL SKILLS:
-- AI/ML: Computer Vision (YOLO, Image Segmentation), Deep Learning, Neural Networks
-- Programming: Python (OpenCV, NumPy, SciPy, Matplotlib, PyQt), Dart, SQL
-- Embedded Systems: Raspberry Pi, Arduino, ESP, IoT Design
-- Prototyping: Blender, Unity 3D, 3D Printing (FDM/DLP)
-
-AWARDS (Recent):
-- Pollibotics: Best Innovative Idea, IEEE Zewail APPX Competition (04/2025)
-- Robodoc5: 1st place Smart Industry Hackathon 5.0 (03/2025)
-- Multiple other 1st and 2nd place awards in competitions
-
-CONFERENCES & PRESENTATIONS:
-- Egyptian Society of Surgeons Conference (05/2025)
-- LEAP Summit Saudi Arabia (02/2025) - Semi-Finalist at Rocket Fuel
-- GenZ Startup TV Program - Secured 500k EGP funding
-- Cairo ICT 2024 Exhibition
-- Presented to Egypt's Prime Minister
-
-PUBLICATION:
-- First Author: "The Role of Agentic AI in Revolutionizing Biotechnology" (International Journal for Biotech Research and Innovations, 2025)
-
-Languages: Arabic (Native), English (Full Professional - IELTS 7), German (Elementary)
-
-Answer questions conversationally and professionally. Be enthusiastic about her achievements while remaining factual. If asked about specific technical details not in the CV, acknowledge the limitation and suggest contacting Nehal directly. Keep responses concise but informative.`;
-
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -63,13 +29,11 @@ export default async function handler(req, res) {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
-  // Handle preflight request
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -81,31 +45,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Validate and limit chat history
-    const validHistory = Array.isArray(chatHistory) ? chatHistory.slice(-10) : []; // Keep last 10 messages
-    
-    // Initialize Groq client
     const groq = new Groq({
       apiKey: process.env.GROQ_API_KEY
     });
 
-    // Build messages array with system prompt, history, and current message
+    const validHistory = Array.isArray(chatHistory) ? chatHistory.slice(-10) : [];
+    
     const messages = [
-      {
-        role: 'system',
-        content: SYSTEM_PROMPT
-      },
+      { role: 'system', content: SYSTEM_PROMPT },
       ...validHistory.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'assistant',
         content: msg.content
       })),
-      {
-        role: 'user',
-        content: message
-      }
+      { role: 'user', content: message }
     ];
 
-    // Create chat completion
     const chatCompletion = await groq.chat.completions.create({
       messages,
       model: 'llama3-8b-8192',
@@ -126,17 +80,17 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error calling Groq API:', error);
     
-    // Handle specific Groq API errors
     if (error.status === 401) {
       return res.status(500).json({ error: 'Authentication failed' });
     } else if (error.status === 429) {
       return res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' });
-    } else if (error.status === 503) {
-      return res.status(503).json({ error: 'Service temporarily unavailable' });
     }
 
     return res.status(500).json({ 
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-  }}
+  }
+};
+
+module.exports = handler;
