@@ -39,10 +39,21 @@ const handler = async (req, res) => {
   }
 
   try {
+    console.log('Request received:', {
+      method: req.method,
+      body: req.body,
+      hasApiKey: !!process.env.GROQ_API_KEY
+    });
+
     const { message, chatHistory = [] } = req.body;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Message is required' });
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+      console.error('GROQ_API_KEY is missing');
+      return res.status(500).json({ error: 'API key not configured' });
     }
 
     const groq = new Groq({
@@ -60,15 +71,22 @@ const handler = async (req, res) => {
       { role: 'user', content: message }
     ];
 
+    console.log('Calling Groq API with:', {
+      messageCount: messages.length,
+      model: 'meta-llama/llama-4-maverick-17b-128e-instruct'
+    });
+
     const chatCompletion = await groq.chat.completions.create({
       messages,
-      model: 'llama3-8b-8192',
+      model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
       temperature: 0.7,
       max_tokens: 1024,
       top_p: 1,
       stream: false,
       stop: null
     });
+
+    console.log('Groq API response received');
 
     const aiResponse = chatCompletion.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
 
@@ -78,17 +96,36 @@ const handler = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error calling Groq API:', error);
+    console.error('Detailed error:', {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      type: error.type,
+      stack: error.stack
+    });
+    
+    // More specific error messages
+    if (error.message && error.message.includes('model_decommissioned')) {
+      return res.status(500).json({ 
+        error: 'Model no longer available',
+        details: 'The AI model is deprecated. Please contact support.' 
+      });
+    }
     
     if (error.status === 401) {
-      return res.status(500).json({ error: 'Authentication failed' });
+      return res.status(500).json({ error: 'Authentication failed - check API key' });
     } else if (error.status === 429) {
       return res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' });
+    } else if (error.status === 400) {
+      return res.status(400).json({ 
+        error: 'Invalid request', 
+        details: error.message 
+      });
     }
 
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details: error.message || 'Unknown error occurred'
     });
   }
 };
