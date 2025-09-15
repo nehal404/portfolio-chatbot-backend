@@ -4,8 +4,8 @@
   "description": "Serverless backend for Nehal's portfolio chatbot",
   "main": "index.js",
   "dependencies": {
-    "@ai-sdk/groq": "^1.0.0",
-    "ai": "^4.0.0"
+    "@ai-sdk/groq": "^1.2.9",
+    "ai": "^4.3.19"
   },
   "engines": {
     "node": ">=18.x"
@@ -14,7 +14,13 @@
     "type": "git",
     "url": "git+https://github.com/nehal404/portfolio-chatbot-backend.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "ai",
+    "chatbot",
+    "portfolio",
+    "groq",
+    "vercel"
+  ],
+  "author": "Nehal Alaa",
   "license": "ISC"
 }
