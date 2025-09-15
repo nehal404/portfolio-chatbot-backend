@@ -4,7 +4,8 @@
   "description": "Serverless backend for Nehal's portfolio chatbot",
   "main": "index.js",
   "dependencies": {
-    "groq-sdk": "^0.3.3"
+    "@ai-sdk/groq": "^1.0.0",
+    "ai": "^4.0.0"
   },
   "engines": {
     "node": ">=18.x"
