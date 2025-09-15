@@ -53,7 +53,8 @@ const SYSTEM_PROMPT = `{
           "AI diagnostic tool with 430k images dataset across 155 diseases, 95% accuracy",
           "Evolved from desktop (Linux) to mobile (Flutter) and surgical AI model (SAM)"
         ],
-        "github": "https://github.com/nehal404/robodoc"
+        "github": "https://github.com/nehal404/robodoc",
+        "youTube link": "https://youtube.com/shorts/e6S4z3D4dYY?si=LlC0xiuJEoHZEfO9",
       },
       {
         "name": "Orion AI, Strawberry Health Monitoring",
@@ -167,6 +168,7 @@ const SYSTEM_PROMPT = `{
       "name": "Gen Z Startup TV Program",
       "date": "12/2024",
       "location": "Egypt",
+      "youTube link": "https://youtube.com/shorts/e6S4z3D4dYY?si=LlC0xiuJEoHZEfO9",
       "details": [
         "Pitched RoboDoc at GenZ program on DMC TV",
         "Secured a fund of 500k EGP"
